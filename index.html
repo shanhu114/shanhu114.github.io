@@ -62,6 +62,36 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-sql(2) - " class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/14/sql(2) - /" class="article-date">
+  <time datetime="2019-08-14T05:50:04.234Z" itemprop="datePublished">2019-08-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>information_schema查询</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">mysql通过information_schema查询数据 2019-08-12</span><br><span class="line">查询数据库名</span><br><span class="line">mysql&gt; select `SCHEMA_NAME` FROM `information_schema`.`SCHEMATA`;</span><br><span class="line">+--------------------+</span><br><span class="line">| SCHEMA_NAME        |</span><br><span class="line">+--------------------+</span><br><span class="line">| mysql              |</span><br><span class="line">| information_schema |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">| <span class="built_in">test</span>               |</span><br><span class="line">+--------------------+</span><br><span class="line">5 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.11 sec)</span><br><span class="line">查询<span class="built_in">test</span>数据库的表名</span><br><span class="line">mysql&gt; SELECT TABLE_NAME FROM information_schema .TABLES WHERE TABLE_SCHEMA=<span class="string">'test'</span>;</span><br><span class="line">+------------+</span><br><span class="line">| TABLE_NAME |</span><br><span class="line">+------------+</span><br><span class="line">| content    |</span><br><span class="line">| users      |</span><br><span class="line">+------------+</span><br><span class="line">查询users表</span><br><span class="line">mysql&gt; select COLUMN_NAME FROM information_schema.COLUMNS <span class="built_in">where</span> TABLE_SCHEMA=<span class="string">'test'</span>and TABLE_NAME=<span class="string">'users'</span>;</span><br><span class="line">+-------------+</span><br><span class="line">| COLUMN_NAME |</span><br><span class="line">+-------------+</span><br><span class="line">| id          |</span><br><span class="line">| username    |</span><br><span class="line">| passwd      |</span><br><span class="line">| user_ip     |</span><br><span class="line">| join_date   |</span><br><span class="line">+-------------+</span><br><span class="line">查询content表</span><br><span class="line">mysql&gt; select COLUMN_NAME FROM information_schema.COLUMNS <span class="built_in">where</span> TABLE_SCHEMA=<span class="string">'test'</span>and TABLE_NAME=<span class="string">'content'</span>;</span><br><span class="line">+-------------+</span><br><span class="line">| COLUMN_NAME |</span><br><span class="line">+-------------+</span><br><span class="line">| id          |</span><br><span class="line">| title       |</span><br><span class="line">| author      |</span><br><span class="line">| value       |</span><br><span class="line">| time        |</span><br><span class="line">| ip          |</span><br><span class="line">+-------------+</span><br><span class="line">查询user表里面的数据</span><br><span class="line">mysql&gt; select `id`,`join_date`,`passwd`,`user_ip`,`username` from `<span class="built_in">test</span>`.`users`;</span><br><span class="line">+----+------------+----------------------------------+-----------+----------+</span><br><span class="line">| id | join_date  | passwd                           | user_ip   | username |</span><br><span class="line">+----+------------+----------------------------------+-----------+----------+</span><br><span class="line">|  1 | 1545380764 | e10adc3949ba59abbe56e057f20f883e | 127.0.0.1 | admin    |</span><br><span class="line">| 10 | 1545398261 | 156756811d9c56c11ebccdef355bf4e0 | 127.0.0.1 | zfzv     |</span><br><span class="line">|  8 | 1545395621 | a6be11c879133def33fdb767be80056f | 127.0.0.1 | sadfasdf |</span><br><span class="line">|  9 | 1545395672 | f95adbce0a51589cb6e87112eb6becd4 | 127.0.0.1 | booom    |</span><br><span class="line">+----+------------+----------------------------------+-----------+----------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line">查询content表里面的数据</span><br><span class="line">mysql&gt; select `id`,`ip`,`time`,`title`,`value` from `<span class="built_in">test</span>`.`content`;</span><br><span class="line">+----+-----------+------------+------------+--------------+</span><br><span class="line">| id | ip        | time       | title      | value        |</span><br><span class="line">+----+-----------+------------+------------+--------------+</span><br><span class="line">|  1 | 127.0.0.1 | 1545373229 | mmmn       | bnbnb        |</span><br><span class="line">|  2 | 127.0.0.1 | 1545373315 | zzzzsadfas | sdafas       |</span><br><span class="line">|  3 | 127.0.0.1 | 1545373411 | asfwefas   | zcz          |</span><br><span class="line">|  4 | 127.0.0.1 | 1545373524 | qqq        | bbb          |</span><br><span class="line">|  5 | 127.0.0.1 | 1545373554 | qqq        | bbb          |</span><br><span class="line">|  6 | 127.0.0.1 | 1545373740 | asdfas     | sdfadfas     |</span><br><span class="line">|  7 | 127.0.0.1 | 1545373805 | zzzsafd    | asfdadsf     |</span><br><span class="line">|  8 | 127.0.0.1 | 1545374169 | wqeras     | afdas        |</span><br><span class="line">|  9 | 127.0.0.1 | 1545376635 | asfasdf    | ssddafaf     |</span><br><span class="line">| 10 | 127.0.0.1 | 1545376766 | poikj      | ddfd         |</span><br><span class="line">| 11 | 127.0.0.1 | 1545376943 | efadsfa    | safdasdfas   |</span><br><span class="line">| 12 |           |            |            |              |</span><br><span class="line">| 13 | 127.0.0.1 | 1545377508 | pdo        | sada         |</span><br><span class="line">| 14 | 127.0.0.1 | 1545377542 | testtitle  | asdfasdf     |</span><br><span class="line">| 15 | 127.0.0.1 | 1545377865 | sad        | sdada        |</span><br><span class="line">| 16 | 127.0.0.1 | 1545385359 | 16161616   | 161616161616 |</span><br><span class="line">| 17 | 127.0.0.1 | 1545387832 | 17         | 17           |</span><br><span class="line">| 18 | 127.0.0.1 | 1545390283 | adasf      | sdafasd      |</span><br><span class="line">| 19 | 127.0.0.1 | 1545390312 | awawaw     | asdfasf      |</span><br><span class="line">| 20 | 127.0.0.1 | 1545392563 | sdaf       | safdasf      |</span><br><span class="line">+----+-----------+------------+------------+--------------+</span><br><span class="line">20 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.45 sec)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/14/sql(2) - /" data-id="cjzau9qml0002xkukrgoo7wzv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-sql" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/08/14/sql/" class="article-date">
@@ -82,7 +112,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/14/sql/" data-id="cjzatwb8100044oukmb60cb3z" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/14/sql/" data-id="cjzau9qn10005xkukwwh4a35p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -123,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/13/header/" data-id="cjzatwb7m00004ouk4vx9bp69" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/13/header/" data-id="cjzau9qmb0000xkukaf3mzwts" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/12/jiaoxing/" data-id="cjzatwb7y00024oukq5mb6rp0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/12/jiaoxing/" data-id="cjzau9qmj0001xkukdu6kdsgr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/11/php/" data-id="cjzatwb8p00074ouksav5q3pq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/11/php/" data-id="cjzau9qno0008xkuk9amsq7k5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -219,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/11/primenum/" data-id="cjzatwb7v00014ouk02zz4sgq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/11/primenum/" data-id="cjzau9qmo0004xkukctj1nc7b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +344,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/09/centOS/" data-id="cjzatwb8800054oukftbdph1g" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/09/centOS/" data-id="cjzau9qn40006xkuklofpq6t0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/07/LINUX/" data-id="cjzatwb8g00064oukzqq9r2jq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/07/LINUX/" data-id="cjzau9qnf0007xkuku1074u5a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -408,7 +438,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/hello-world/" data-id="cjzatwb7z00034oukspuum43b" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/hello-world/" data-id="cjzau9qmn0003xkukw7pqx5cb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -449,6 +479,10 @@
       <ul>
         
           <li>
+            <a href="/2019/08/14/sql(2) - /">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/14/sql/">(no title)</a>
           </li>
         
@@ -462,10 +496,6 @@
         
           <li>
             <a href="/2019/08/11/php/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/08/11/primenum/">(no title)</a>
           </li>
         
       </ul>
